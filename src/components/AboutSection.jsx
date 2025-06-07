@@ -44,7 +44,7 @@ export const AboutSection = () => {
             <div className="gradient-border p-6 card-hover">
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-full bg-primary/10">
-                  <Code sx={{ fontSize: 24 }} className="text-primary" />
+                  <Code sx={{ fontSize: 24 }} className="text-primary " />
                 </div>
                 <div className="text-left">
                   <h4 className="text-lg font-semibold">Custom Software Development</h4>
