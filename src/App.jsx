@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { AllProjects } from "./pages/AllProjects";
 import { NotFound } from "./pages/NotFound";
@@ -13,13 +13,13 @@ function App() {
     <><MusicContext.Provider value={{ isMusicOn, setIsMusicOn }}>
       <Loading />
       <ThemeToggle />
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route index element={<Home />} />
           <Route path="/all-projects" element={<AllProjects />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
       </MusicContext.Provider>
     </>
   );

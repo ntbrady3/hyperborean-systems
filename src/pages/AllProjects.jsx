@@ -78,7 +78,7 @@ export const AllProjects = () => {
 			<StarBackground />
 			<div className="py-24 px-4 relative">
 				<Link
-					to="/#projects"
+					to="/projects"
 					className="fixed top-4 left-4 z-50 text-foreground/80 hover:text-primary transition-colors duration-300"
 				>
 					<ArrowBackIcon fontSize="large" />

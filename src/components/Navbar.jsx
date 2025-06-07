@@ -9,11 +9,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 
 const navItems = [
-    { name: 'HOME', href: '#home', icon: HomeIcon },
-    { name: 'ABOUT', href: '#about', icon: InfoIcon },
-    { name: 'SERVICES', href: '#services', icon: BuildIcon },
-    { name: 'PROJECTS', href: '#projects', icon: WorkIcon },
-    { name: 'CONTACT', href: '#contact', icon: ContactPageIcon }
+    { name: 'HOME', href: '/home', icon: HomeIcon },
+    { name: 'ABOUT', href: '/about', icon: InfoIcon },
+    { name: 'SERVICES', href: '/services', icon: BuildIcon },
+    { name: 'PROJECTS', href: '/projects', icon: WorkIcon },
+    { name: 'CONTACT', href: '/contact', icon: ContactPageIcon }
 ];
 
 export const Navbar = () => {

@@ -71,7 +71,7 @@ export const HomeSection = () => {
           </p>
           <div className="opacity-0 animate-fade-in-delay-4 pt-4">
             <a 
-              href="#projects" 
+              href="/projects" 
               className="inline-block px-8 py-3 text-primary-foreground font-medium font-orbitron transition-all duration-300 bg-primary/50 hover:bg-primary/80 border-2 rounded-md border-primary glow-border"
             >
               View Our Work

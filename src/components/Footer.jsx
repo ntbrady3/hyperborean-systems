@@ -7,7 +7,7 @@ export const Footer = () => {
             <p className="text-sm text-muted-foreground"> 
                 &copy; {new Date().getFullYear()} Hyperborean Systems. All rights reserved.
             </p>
-            <a href="#home" className="mt-5 p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors duration-300 text-primary animate-bounce">
+            <a href="/home" className="mt-5 p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors duration-300 text-primary animate-bounce">
                 <ArrowUp size={20}/>
             </a>
         </footer>
