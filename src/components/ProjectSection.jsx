@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { ProjectCard } from "@/components/ProjectCard";
-import { motion } from "framer-motion";
 import React from 'react';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
+// Sample project and category data (replace with your actual data)
 const projects = [
   {
     id: 1,
@@ -76,7 +79,6 @@ const projects = [
     date: "2024-07-01"
   }
 ];
-
 const categories = ["all", "frontend", "backend", "data-analytics"];
 
 // Error Boundary Component
@@ -99,12 +101,8 @@ class ErrorBoundary extends React.Component {
 
 export const ProjectSection = () => {
   const [activeCategory, setActiveCategory] = useState("all");
-  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupCategory, setPopupCategory] = useState("all");
-  const carouselRef = useRef(null);
-  const touchStartX = useRef(null);
-  const touchEndX = useRef(null);
 
   // Filter projects and limit to first 6 for the main section
   const filteredProjects = projects
@@ -116,24 +114,6 @@ export const ProjectSection = () => {
     (project) => popupCategory === "all" || project.category === popupCategory
   );
 
-  // Reset and validate active project index when category or filtered projects change
-  useEffect(() => {
-    if (filteredProjects.length === 0) {
-      setActiveProjectIndex(-1); // No valid index if no projects
-      return;
-    }
-    // Ensure index is valid for the new filtered list
-    if (activeProjectIndex < 0 || activeProjectIndex >= filteredProjects.length) {
-      setActiveProjectIndex(0);
-    } else {
-      // Verify the project at current index is still valid
-      const currentProject = filteredProjects[activeProjectIndex];
-      if (!currentProject) {
-        setActiveProjectIndex(0);
-      }
-    }
-  }, [activeCategory, filteredProjects]);
-
   // Prevent background scrolling when popup is open
   useEffect(() => {
     if (isPopupOpen) {
@@ -141,45 +121,10 @@ export const ProjectSection = () => {
     } else {
       document.body.style.overflow = 'auto';
     }
-    // Cleanup on unmount or when popup closes
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [isPopupOpen]);
-
-  const handleProjectChange = (index) => {
-    if (filteredProjects.length === 0) return; // Do nothing if no projects
-    const newIndex = (index < 0 
-      ? filteredProjects.length - 1 
-      : index >= filteredProjects.length 
-      ? 0 
-      : index);
-    setActiveProjectIndex(newIndex);
-  };
-
-  // Handle touch events for swiping
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
-    const diffX = touchStartX.current - touchEndX.current;
-    const threshold = 50; // Minimum swipe distance in pixels
-    if (diffX > threshold) {
-      // Swipe left, go to next project
-      handleProjectChange(activeProjectIndex + 1);
-    } else if (diffX < -threshold) {
-      // Swipe right, go to previous project
-      handleProjectChange(activeProjectIndex - 1);
-    }
-    touchStartX.current = null;
-    touchEndX.current = null;
-  };
 
   const openPopup = (category) => {
     setPopupCategory(category);
@@ -191,29 +136,34 @@ export const ProjectSection = () => {
     setPopupCategory("all");
   };
 
+  const settings = {
+    centerMode: true,
+    infinite: true,
+    slidesToShow: 3,
+    centerPadding: "0",
+    arrows: true,
+    dots: true,
+    speed: 500,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        }
+      }
+    ]
+  };
+
   return (
     <section id="projects" className="py-24 px-4 relative">
-      <div className="container mx-auto max-w-[800px] flex flex-col items-center">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-orbitron italic tracking-tight overflow-visible inline-flex items-baseline">
-          <span>Featured </span>
-          <span 
-            className="text-primary opacity-0 animate-fade-in-delay-1 neon-glow inline-block relative" 
-            style={{ paddingBottom: '40px' }}
-          >
-            <span 
-              className="glitch-text relative inline-block" 
-              data-text="Projects."
-              style={{ paddingBottom: '20px', paddingRight: '0px' }}
-            >
-              Projects.
-            </span>
-          </span>
+      <div className="container mx-auto max-w-5xl flex flex-col items-center">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-orbitron italic tracking-tight">
+          Featured Projects
         </h1>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Here are some of our recent projects that showcase our skills and creativity. 
-          Each project is a testament to our dedication to building innovative solutions.
+        <p className="text-center text-muted-foreground mb-6 max-w-2xl mx-auto">
+          Here are some of our recent projects that showcase our skills and creativity.
         </p>
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
           {categories.map((category, key) => (
             <button
               key={key}
@@ -228,74 +178,21 @@ export const ProjectSection = () => {
             </button>
           ))}
         </div>
-        <div className="relative w-full flex flex-col items-center">
-          {filteredProjects.length === 0 || activeProjectIndex < 0 ? (
+        <div className="relative w-full">
+          {filteredProjects.length > 0 ? (
+            <Slider {...settings}>
+              {filteredProjects.map((project) => (
+                <div key={project.id} style={{ width: 300 }}>
+                  <ErrorBoundary>
+                    <ProjectCard project={project} />
+                  </ErrorBoundary>
+                </div>
+              ))}
+            </Slider>
+          ) : (
             <div className="text-center text-foreground text-lg">
               No projects found for the category "{activeCategory}".
             </div>
-          ) : (
-            <>
-              {/* Radio Inputs for Accessibility */}
-              {filteredProjects.map((project, index) => (
-                <input
-                  key={project.id}
-                  type="radio"
-                  name="project-slider"
-                  id={`project-item-${index}`}
-                  checked={activeProjectIndex === index}
-                  onChange={() => handleProjectChange(index)}
-                  className="hidden"
-                />
-              ))}
-              {/* Cards */}
-                <div
-                ref={carouselRef}
-                className="relative w-full h-[450px] mb-6 touch-manipulation overflow-x-hidden overflow-y-hidden"
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                >
-                {filteredProjects.map((project, index) => {
-                    const length = filteredProjects.length;
-                    const position = (index - activeProjectIndex + length) % length;
-                    let x, scale, zIndex;
-                    if (position === 0) {
-                    x = '0%';
-                    scale = 1;
-                    zIndex = 1;
-                    } else if (position === 1) {
-                    x = '50%';
-                    scale = 0.85;
-                    zIndex = 0;
-                    } else if (position === length - 1) {
-                    x = '-50%';
-                    scale = 0.85;
-                    zIndex = 0;
-                    } else if (position < length / 2) {
-                    x = '-500%';
-                    scale = 0.85;
-                    zIndex = -1;
-                    } else {
-                    x = '500%';
-                    scale = 0.85;
-                    zIndex = -1;
-                    }
-                    return (
-                    <motion.label
-                        key={project.id}
-                        htmlFor={`project-item-${index}`}
-                        className="card absolute min-w-[300px] w-[50%] h-full left-0 right-0 mx-auto cursor-pointer overflow-hidden"
-                        animate={{ x, scale, zIndex }}
-                        transition={{ duration: 0.4, ease: 'easeInOut' }}
-                    >
-                        <ErrorBoundary>
-                        <ProjectCard project={project} />
-                        </ErrorBoundary>
-                    </motion.label>
-                    );
-                })}
-                </div>
-            </>
           )}
         </div>
         <div className="text-center p-16">
@@ -331,23 +228,11 @@ export const ProjectSection = () => {
             </button>
             <div className="py-12 px-4">
               <div className="container mx-auto max-w-5xl">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-orbitron italic tracking-tight overflow-visible inline-flex items-baseline">
-                  <span>All </span>
-                  <span 
-                    className="text-primary opacity-0 animate-fade-in-delay-1 neon-glow inline-block relative" 
-                    style={{ paddingBottom: '40px' }}
-                  >
-                    <span 
-                      className="glitch-text relative inline-block" 
-                      data-text="Projects."
-                      style={{ paddingBottom: '20px', paddingRight: '0px' }}
-                    >
-                      Projects.
-                    </span>
-                  </span>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-orbitron italic tracking-tight">
+                  All Projects
                 </h1>
                 <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-                  Explore our complete portfolio of projects, showcasing our expertise across various domains.
+                  Explore our complete portfolio of projects.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 mb-12">
                   {categories.map((category, key) => (

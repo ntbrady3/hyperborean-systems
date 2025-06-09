@@ -401,3 +401,11 @@ h1, .glitch-text, .glitch-effect, .inline-flex {
   opacity: 0.5;
   cursor: not-allowed;
 }
+.slick-slide {
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+}
+
+.slick-center {
+  transform: scale(1);
+}

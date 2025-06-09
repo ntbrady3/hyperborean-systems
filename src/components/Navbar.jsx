@@ -140,14 +140,14 @@ export const Navbar = () => {
         >
           {isMenuOpen ? (
             <CloseIcon sx={{ 
-              fontSize: 20, 
+              fontSize: 28, 
               color: 'var(--primary-foreground)',
               filter: 'drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor)',
               transition: 'filter 0.3s ease-in-out, color 0.3s ease-in-out'
             }} />
           ) : (
             <MenuIcon sx={{ 
-              fontSize: 20, 
+              fontSize: 28, 
               color: 'var(--primary-foreground)',
               filter: 'drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor)',
               transition: 'filter 0.3s ease-in-out, color 0.3s ease-in-out'

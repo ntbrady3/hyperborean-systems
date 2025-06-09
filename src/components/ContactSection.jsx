@@ -43,7 +43,7 @@ export const ContactSection = () => {
           <span>Get In&nbsp;</span>
           <span 
             className="text-primary opacity-0 animate-fade-in-delay-1 neon-glow inline-block relative" 
-            style={{ paddingBottom: '40px' }}
+            style={{ paddingBottom: '20px' }}
           >
             <span 
               className="glitch-text relative inline-block" 
@@ -54,7 +54,7 @@ export const ContactSection = () => {
             </span>
           </span>
         </h1>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+        <p className="text-center text-muted-foreground mb-6 max-w-2xl mx-auto">
           Have a project in mind or want to collaborate? I'm always open to new opportunities and ideas. Feel free to reach out to me through the form below or connect with me on social media.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -92,16 +92,16 @@ export const ContactSection = () => {
               <h4 className="font-medium mb-4 text-center">Connect With Us!</h4>
               <div className="flex space-x-4 justify-center">
                 <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <LinkedIn sx={{ fontSize: 24 }} />
+                  <LinkedIn sx={{ fontSize: 36 }} />
                 </a>
                 <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <Facebook sx={{ fontSize: 24 }} />
+                  <Facebook sx={{ fontSize: 36 }} />
                 </a>
                 <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <X sx={{ fontSize: 24 }} />
+                  <X sx={{ fontSize: 36 }} />
                 </a>
                 <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <Instagram sx={{ fontSize: 24 }} />
+                  <Instagram sx={{ fontSize: 36 }} />
                 </a>
               </div>
             </div>

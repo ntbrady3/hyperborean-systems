@@ -56,11 +56,11 @@ export const HomeSection = () => {
   return (
     <section id="home" className="relative min-h-screen flex flex-col items-center justify-center px-4">
       <div className="container max-w-6xl mx-auto text-center px-4 sm:px-10">
-        <div className="space-y-6">
+        <div className="space-y-2">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-orbitron italic tracking-tight overflow-visible">
             <span 
               className="w-full px-6 text-primary opacity-0 animate-fade-in-delay-1 neon-glow block relative" 
-              style={{ paddingBottom: '40px' }}
+              style={{ paddingBottom: '20px' }}
             >
               <span 
                 className="glitch-text relative inline-block" 

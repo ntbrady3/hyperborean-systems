@@ -10,7 +10,7 @@ export const AboutSection = () => {
           <span>About&nbsp;</span>
           <span 
             className="text-primary opacity-0 animate-fade-in-delay-1 neon-glow inline-block relative" 
-            style={{ paddingBottom: '40px' }}
+            style={{ paddingBottom: '20px' }}
           >
             <span 
               className="glitch-text relative inline-block" 

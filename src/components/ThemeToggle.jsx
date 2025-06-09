@@ -138,9 +138,9 @@ export const ThemeToggle = () => {
     console.log('Slider changed, raw value:', e.target.value, 'Clamped volume:', clampedVolume);
   };
 
-  const togglePopup = (e) => {
-    e.preventDefault();
-    setIsPopupOpen((prev) => !prev);
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+    console.log('isPopupOpen toggled to:', !isPopupOpen);
   };
 
   const toggleMusic = (e) => {
@@ -178,31 +178,20 @@ export const ThemeToggle = () => {
       <button
         onClick={togglePopup}
         className={cn(
-          'cursor-pointer fixed bottom-4 left-4 z-[60] p-2 rounded-full bg-card',
+          'cursor-pointer fixed bottom-4 left-4 z-[50] p-2 rounded-full transition-opacity duration-300',
           'w-10 h-10 flex items-center justify-center',
-          'md:top-4 md:right-4 md:bottom-auto md:left-auto' // Top-right on larger screens
+          'md:top-4 md:right-4 md:bottom-auto md:left-auto',
+          'opacity-100 pointer-events-auto'
         )}
-        aria-label={isPopupOpen ? 'Close settings' : 'Open settings'}
+        aria-label="Open settings"
       >
-        {isPopupOpen ? (
-          <CloseIcon 
-            sx={{ 
-              fontSize: 20, 
-              color: 'var(--primary-foreground)',
-              filter: 'drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor)',
-              transition: 'filter 0.3s ease-in-out, color 0.3s ease-in-out'
-            }} 
-          />
-        ) : (
-          <SettingsIcon 
-            sx={{ 
-              fontSize: 20, 
-              color: 'var(--primary-foreground)',
-              filter: 'drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor)',
-              transition: 'filter 0.3s ease-in-out, color 0.3s ease-in-out'
-            }} 
-          />
-        )}
+        <SettingsIcon 
+          sx={{ 
+            fontSize: 28, 
+            color: 'var(--primary-foreground)',
+            display: 'block'
+          }} 
+        />
       </button>
 
       <div
@@ -217,13 +206,28 @@ export const ThemeToggle = () => {
         ></div>
         <div
           className={cn(
-            'fixed bottom-16 left-4 w-3/4 max-w-xs bg-background/95 rounded-md p-6 shadow-lg',
+            'fixed bottom-4 left-4 w-3/4 max-w-xs bg-background/95 rounded-md shadow-lg',
             'transition-all duration-300',
             isPopupOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
-            'sm:top-16 sm:right-4 sm:bottom-auto sm:left-auto' // Top-right on larger screens
+            'sm:top-4 sm:right-4 sm:bottom-auto sm:left-auto'
           )}
         >
-          <h3 className="text-lg font-semibold mb-4 text-center">Settings</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-center">Settings</h3>
+            <button
+              onClick={togglePopup}
+              className="p-1 rounded-full transition-colors duration-300 cursor-pointer"
+              aria-label="Close settings"
+            >
+              <CloseIcon 
+                sx={{ 
+                  fontSize: 24, 
+                  color: 'var(--primary-foreground)',
+                  display: 'block'
+                }} 
+              />
+            </button>
+          </div>
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
