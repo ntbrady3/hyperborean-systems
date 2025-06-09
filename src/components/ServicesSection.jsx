@@ -84,13 +84,13 @@ export const ServicesSection = () => {
   }, []);
 
   return (
-    <section id="services" className="py-24 px-4 relative bg-secondary/30">
+    <section id="services" className="py-24 px-4 relative">
       <div className="container max-w-5xl mx-auto">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-orbitron italic tracking-tight overflow-visible inline-flex items-baseline">
-          <span>Our</span>
+          <span>Our&nbsp;</span>
           <span 
-            className="w-full px-4 text-primary opacity-0 animate-fade-in-delay-1 neon-glow inline-block relative" 
-            style={{ paddingBottom: '40px'}}
+            className="text-primary opacity-0 animate-fade-in-delay-1 neon-glow inline-block relative" 
+            style={{ paddingBottom: '40px' }}
           >
             <span 
               className="glitch-text relative inline-block" 
@@ -106,12 +106,12 @@ export const ServicesSection = () => {
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
-              <div key={index} className="p-6 bg-card rounded-lg shadow-xs card-hover gradient-border">
+              <div key={index} className="p-6 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50">
                 <div className="flex flex-col items-center text-center">
                   <div className="p-3 rounded-full bg-primary/10 mb-4">
                     <Icon sx={{ fontSize: 32 }} className="text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">{service.name}</h3>
+                  <h3 className="font-semibold text-lg mb-2 font-electrolize text-tertiary">{service.name}</h3>
                   <p className="text-muted-foreground text-sm">{service.description}</p>
                 </div>
               </div>
@@ -121,7 +121,7 @@ export const ServicesSection = () => {
 
         {/* Testimonial Carousel */}
         <div className="mt-16">
-          <h3 className="text-2xl font-semibold text-center mb-8">What Clients Say</h3>
+          <h3 className="text-2xl font-semibold text-center font-orbitron mb-8 text-tertiary">What Clients Say</h3>
           <div className="relative">
             <div className="flex items-center overflow-x-hidden">
               {/* Carousel */}
@@ -136,7 +136,7 @@ export const ServicesSection = () => {
                     data-index={index}
                     className="testimonial-card flex-none w-full px-2 snap-center"
                   >
-                    <div className="gradient-border p-6 card-hover bg-background/95">
+                    <div className="p-6 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50">
                       <p className="text-foreground text-lg italic mb-4">"{testimonial.quote}"</p>
                       <p className="text-primary font-semibold">{testimonial.name}</p>
                       <p className="text-muted-foreground text-sm">{testimonial.role}</p>
@@ -150,10 +150,10 @@ export const ServicesSection = () => {
             <div className="w-full flex items-center justify-center gap-4 mt-6">
               <button
                 onClick={() => scrollToTestimonial(activeTestimonial - 1 >= 0 ? activeTestimonial - 1 : testimonials.length - 1)}
-                className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors duration-300 z-10 ml-4"
+                className="w-10 h-10 flex items-center justify-center bg-primary/50 rounded-full hover:bg-primary/70 transition-colors duration-300 z-10 ml-4"
                 aria-label="Previous testimonial"
               >
-                <ChevronLeft sx={{ fontSize: 24 }} className="text-primary" />
+                <ChevronLeft sx={{ fontSize: 24 }} className="text-primary-foreground" />
               </button>
               <div className="flex justify-center gap-2">
                 {testimonials.map((_, index) => (
@@ -161,21 +161,20 @@ export const ServicesSection = () => {
                     key={index}
                     onClick={() => scrollToTestimonial(index)}
                     className={cn(
-                      "p-1 rounded-full transition-colors duration-300",
+                      "w-3 h-3 rounded-full transition-colors duration-300",
                       activeTestimonial === index ? "bg-primary" : "bg-foreground/30 hover:bg-foreground/50"
                     )}
                     aria-label={`Go to testimonial ${index + 1}`}
                   >
-                    <div className="w-1 h-1 rounded-full" />
                   </button>
                 ))}
               </div>
               <button
                 onClick={() => scrollToTestimonial(activeTestimonial + 1 < testimonials.length ? activeTestimonial + 1 : 0)}
-                className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors duration-300 z-10 mr-4"
+                className="w-10 h-10 flex items-center justify-center bg-primary/50 rounded-full hover:bg-primary/70 transition-colors duration-300 z-10 mr-4"
                 aria-label="Next testimonial"
               >
-                <ChevronRight sx={{ fontSize: 24 }} className="text-primary" />
+                <ChevronRight sx={{ fontSize: 24 }} className="text-primary-foreground" />
               </button>
             </div>
           </div>

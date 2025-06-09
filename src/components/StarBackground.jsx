@@ -1,17 +1,37 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import img from '../assets/Untitled1.png';
 
 export const StarBackground = () => {
   const canvasRef = useRef(null);
+  const starfieldRef = useRef(null);
+
+  // Function to calculate number of stars based on window size
+  const calculateStarCount = () => {
+    const area = window.innerWidth * window.innerHeight;
+    // Base of 100 stars for a 1920x1080 window, scaled by area
+    const baseStars = 200;
+    const baseArea = 1920 * 1080;
+    const scaleFactor = area / baseArea;
+    // Minimum 50 stars, maximum 300 stars, scaled roughly by area
+    return Math.min(300, Math.max(50, Math.round(baseStars * scaleFactor)));
+  };
+
+  // State for star positions, updated on resize
+  const [starPositions, setStarPositions] = useState(() => {
+    return Array.from({ length: calculateStarCount() }, () => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+    }));
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
 
     // Scene
     const scene = new THREE.Scene();
-    const fog = new THREE.Fog(0x000000, .5, 2);
+    const fog = new THREE.Fog(0x000000, 0.5, 2);
     scene.fog = fog;
 
     // Objects
@@ -48,11 +68,17 @@ export const StarBackground = () => {
       polygonOffsetUnits: 1,
     });
 
+    // Get initial primary color from CSS variable
+    const getPrimaryColor = () => {
+      const primary = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim();
+      return new THREE.Color(primary);
+    };
+
     // Material for the wireframe lines
     const wireframeMaterial = new THREE.MeshStandardMaterial({
       displacementMap: gridTexture,
       displacementScale: 0.2,
-      color: 0x4682b4,
+      color: getPrimaryColor(),
       wireframe: true,
       transparent: false,
       depthWrite: false,
@@ -61,7 +87,7 @@ export const StarBackground = () => {
     const wireframeMaterial2 = new THREE.MeshStandardMaterial({
       displacementMap: gridTexture2,
       displacementScale: 0.2,
-      color: 0x4682b4,
+      color: getPrimaryColor(),
       wireframe: true,
       transparent: false,
       depthWrite: false,
@@ -117,28 +143,6 @@ export const StarBackground = () => {
     camera.position.z = 1.10;
     scene.add(camera);
 
-    // Controls
-    const controls = new OrbitControls(camera, canvas);
-    controls.enableDamping = true;
-    controls.enabled = true;
-
-    // Mouse position tracking for look direction
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetLookOffsetX = 0;
-    let currentLookOffsetX = 0;
-    let targetLookOffsetY = 0;
-    let currentLookOffsetY = 0;
-
-    const handleMouseMove = (event) => {
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(event.clientY / window.innerHeight) * 2;
-      targetLookOffsetX = mouseX * 0.3;
-      targetLookOffsetY = mouseY * 0.3;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
     // Renderer
     const renderer = new THREE.WebGLRenderer({
       canvas: canvas,
@@ -147,56 +151,45 @@ export const StarBackground = () => {
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Handle resize
+    // Handle resize and update star count
     const handleResize = () => {
-      sizes.width = canvas.clientWidth;
-      sizes.height = canvas.clientHeight;
+      sizes.width = window.innerWidth;
+      sizes.height = window.innerHeight;
+      console.log('Resizing to', sizes.width, sizes.height);
       camera.aspect = sizes.width / sizes.height;
       camera.updateProjectionMatrix();
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Update star positions based on new window size
+      setStarPositions(
+        Array.from({ length: calculateStarCount() }, () => ({
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+        }))
+      );
+      // Force a render to ensure the canvas updates immediately
+      renderer.render(scene, camera);
     };
     window.addEventListener("resize", handleResize);
 
     const clock = new THREE.Clock();
 
-    // Theme transition logic
-    const lightFogColor = new THREE.Color('#000000');
-    const darkFogColor = new THREE.Color('#000000');
-    const lightWireframeColor = new THREE.Color("hsl(180, 100%, 50%)");
-    const darkWireframeColor = new THREE.Color("hsl(180, 100%, 50%)");
-    let targetFogColor = new THREE.Color();
-    let currentFogColor = new THREE.Color();
-    let targetWireframeColor = new THREE.Color();
-    let currentWireframeColor = new THREE.Color();
+    // Primary color transition logic
+    const targetWireframeColor = new THREE.Color();
+    const currentWireframeColor = new THREE.Color();
+    targetWireframeColor.copy(getPrimaryColor());
+    currentWireframeColor.copy(targetWireframeColor);
     const transitionSpeed = 0.05;
 
-    // Check initial theme
-    const isDarkMode = document.documentElement.classList.contains("dark");
-    targetFogColor.copy(isDarkMode ? darkFogColor : lightFogColor);
-    currentFogColor.copy(targetFogColor);
-    fog.color.copy(currentFogColor);
-    targetWireframeColor.copy(isDarkMode ? darkWireframeColor : lightWireframeColor);
-    currentWireframeColor.copy(targetWireframeColor);
-    wireframeMaterial.color.copy(currentWireframeColor);
-    wireframeMaterial2.color.copy(currentWireframeColor);
-
-    // Observe theme changes
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "class") {
-          const isDarkMode = document.documentElement.classList.contains("dark");
-          targetFogColor.copy(isDarkMode ? darkFogColor : lightFogColor);
-          targetWireframeColor.copy(
-            isDarkMode ? darkWireframeColor : lightWireframeColor
-          );
-        }
-      });
+    // Observe primary color changes
+    const observer = new MutationObserver(() => {
+      const newColor = getPrimaryColor();
+      targetWireframeColor.copy(newColor);
     });
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class"],
+      attributeFilter: ['style'],
     });
 
     // Animation loop
@@ -218,17 +211,13 @@ export const StarBackground = () => {
       const directionY = 0.02;
       const directionZ = -1;
 
-      currentLookOffsetX += (targetLookOffsetX - currentLookOffsetX);
-      currentLookOffsetY += (targetLookOffsetY - currentLookOffsetY);
+      camera.lookAt(
+        camera.position.x + directionX * 10,
+        camera.position.y + directionY * 10,
+        camera.position.z + directionZ
+      );
 
-      const lookAtX = camera.position.x + directionX * 10 + currentLookOffsetX;
-      const lookAtY = camera.position.y + directionY * 10 + currentLookOffsetY;
-      const lookAtZ = camera.position.z + directionZ;
-      camera.lookAt(lookAtX, lookAtY, lookAtZ);
-
-      // Interpolate colors for smooth transition
-      currentFogColor.lerp(targetFogColor, transitionSpeed);
-      fog.color.copy(currentFogColor);
+      // Interpolate wireframe color for smooth transition
       currentWireframeColor.lerp(targetWireframeColor, transitionSpeed);
       wireframeMaterial.color.copy(currentWireframeColor);
       wireframeMaterial2.color.copy(currentWireframeColor);
@@ -243,7 +232,6 @@ export const StarBackground = () => {
 
     // Cleanup on unmount
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       observer.disconnect();
       renderer.dispose();
@@ -254,6 +242,36 @@ export const StarBackground = () => {
         }
       });
     };
+  }, []);
+
+  // Dynamic meteor creation
+  useEffect(() => {
+    const createMeteor = () => {
+      const meteor = document.createElement('div');
+      meteor.className = 'shooting-star';
+      const top = Math.random() * 66; // Random top position within 0% to 66% (starfield height)
+      const left = Math.random() * 100; // Random left position within 0% to 100%
+      meteor.style.top = `${top}%`;
+      meteor.style.left = `${left}%`;
+      document.querySelector('.css-starfield').appendChild(meteor);
+      // Remove meteor after animation completes
+      setTimeout(() => meteor.remove(), 500); // Matches animation duration
+    };
+
+    // Adjust meteor frequency based on window size
+    const area = window.innerWidth * window.innerHeight;
+    const baseArea = 1920 * 1080;
+    const scaleFactor = area / baseArea;
+    // Base probability of 0.5, scaled by area, clamped between 0.2 and 0.8
+    const meteorProbability = Math.min(0.8, Math.max(0.2, 0.5 * scaleFactor));
+
+    const interval = setInterval(() => {
+      if (Math.random() < meteorProbability) { // Dynamic probability based on window size
+        createMeteor();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -270,17 +288,14 @@ export const StarBackground = () => {
           zIndex: 0,
         }}
       />
-      {/* Generate stars dynamically */}
-      <div className="css-starfield">
-        {Array.from({ length: 100 }).map((_, i) => (
+      {/* CSS starfield with static stars */}
+      <div className="css-starfield" ref={starfieldRef}>
+        {/* Static stars */}
+        {starPositions.map((position, i) => (
           <div
-            key={i}
+            key={`star-${i}`}
             className={`star star-layer-${(i % 3) + 1}`}
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              zIndex:0  ,
-            }}
+            style={position}
           />
         ))}
       </div>

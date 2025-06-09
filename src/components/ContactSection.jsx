@@ -37,7 +37,7 @@ export const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-24 px-4 relative bg-secondary/30">
+    <section id="contact" className="py-24 px-4 relative">
       <div className="container mx-auto max-w-6xl">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-orbitron italic tracking-tight overflow-visible inline-flex items-baseline">
           <span>Get In&nbsp;</span>
@@ -47,10 +47,10 @@ export const ContactSection = () => {
           >
             <span 
               className="glitch-text relative inline-block" 
-              data-text="Touch"
+              data-text="Touch."
               style={{ paddingBottom: '20px', paddingRight: '0px' }}
             >
-              Touch
+              Touch.
             </span>
           </span>
         </h1>
@@ -58,8 +58,8 @@ export const ContactSection = () => {
           Have a project in mind or want to collaborate? I'm always open to new opportunities and ideas. Feel free to reach out to me through the form below or connect with me on social media.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-8 bg-card p-8">
-            <h3 className="text-2xl font-semibold mb-6 text-center">Contact Information</h3>
+          <div className="p-6 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50">
+            <h3 className="text-2xl font-semibold mb-6 text-center text-tertiary font-electrolize">Contact Information</h3>
             <div className="space-y-6 flex flex-col items-center">
               <a
                 href="mailto:ntbrady3@gmail.com"
@@ -106,8 +106,8 @@ export const ContactSection = () => {
               </div>
             </div>
           </div>
-          <div className="bg-card p-8 rounded-lg shadow-xs">
-            <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
+          <div className="p-6 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50">
+            <h3 className="text-2xl font-semibold mb-6 font-electrolize text-tertiary">Send a Message</h3>
             <form className="space-y-6" ref={form} onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
@@ -116,7 +116,7 @@ export const ContactSection = () => {
                   id="name"
                   name="name"
                   required
-                  className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-foreground/60"
+                  className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
                   placeholder="John Doe"
                 />
               </div>
@@ -127,7 +127,7 @@ export const ContactSection = () => {
                   id="email"
                   name="email"
                   required
-                  className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-foreground/60"
+                  className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
                   placeholder="name@name.com"
                 />
               </div>
@@ -137,7 +137,7 @@ export const ContactSection = () => {
                   id="message"
                   name="message"
                   required
-                  className="w-full h-32 px-4 py-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none placeholder:text-foreground/60"
+                  className="w-full h-32 px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary resize-none placeholder:text-foreground/60"
                   placeholder="Hello I'd like to talk about..."
                 />
               </div>

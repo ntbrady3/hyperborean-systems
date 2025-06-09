@@ -7,7 +7,7 @@ export const Loading = () => {
     // Simulate loading (replace with actual loading logic, e.g., asset preloading)
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000); // Adjust based on your loading time
+    }, 1000); // Adjust based on your loading time
     return () => clearTimeout(timer);
   }, []);
 

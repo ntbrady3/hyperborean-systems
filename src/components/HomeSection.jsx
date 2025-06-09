@@ -2,25 +2,32 @@ import { useState, useContext, useEffect } from "react";
 import { ArrowDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MusicContext } from "./MusicContext";
+import { useLocation } from "react-router-dom";
 
 export const HomeSection = () => {
   const [isMusicPopupOpen, setIsMusicPopupOpen] = useState(false);
   const { setIsMusicOn } = useContext(MusicContext);
+  const location = useLocation();
 
-  // Check if popup should show after loading and animations
   useEffect(() => {
-    // Only show popup if not previously shown
+    // Skip popup if navigating from an internal page
+    const referrer = document.referrer;
+    const isInternalNavigation = referrer && new URL(referrer).origin === window.location.origin;
+    if (isInternalNavigation && location.state?.fromInternal) {
+      return;
+    }
+
+    // Skip popup if previously shown (for external first-time visits)
     if (localStorage.getItem('musicPromptShown')) {
       return;
     }
 
     // Wait for loading screen and animations
     const timer = setTimeout(() => {
-      const isLoadingComplete = !document.querySelector('.loading'); // Check if loading screen is gone
+      const isLoadingComplete = !document.querySelector('.loading');
       if (isLoadingComplete) {
         setIsMusicPopupOpen(true);
       } else {
-        // Poll until loading screen is gone
         const poll = setInterval(() => {
           if (!document.querySelector('.loading')) {
             setIsMusicPopupOpen(true);
@@ -29,10 +36,10 @@ export const HomeSection = () => {
         }, 100);
         return () => clearInterval(poll);
       }
-    }, 2000); // Delay for HomeSection animations (adjust if needed)
+    }, );
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [location]);
 
   const handlePlayMusic = () => {
     setIsMusicOn(true);
@@ -71,7 +78,7 @@ export const HomeSection = () => {
           </p>
           <div className="opacity-0 animate-fade-in-delay-4 pt-4">
             <a 
-              href="/projects" 
+              href="#projects" 
               className="inline-block px-8 py-3 text-primary-foreground font-medium font-orbitron transition-all duration-300 bg-primary/50 hover:bg-primary/80 border-2 rounded-md border-primary glow-border"
             >
               View Our Work
@@ -95,13 +102,13 @@ export const HomeSection = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={handlePlayMusic}
-                className="px-4 py-2 rounded-full bg-primary text-primary-foreground font-medium transition-all duration-300 hover:bg-primary/90"
+                className="cosmic-button"
               >
                 Yes
               </button>
               <button
                 onClick={handleNoMusic}
-                className="px-4 py-2 rounded-full bg-card text-foreground font-medium transition-all duration-300 hover:bg-card/80"
+                className="cosmic-button"
               >
                 No
               </button>

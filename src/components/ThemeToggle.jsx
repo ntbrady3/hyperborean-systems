@@ -10,63 +10,133 @@ export const ThemeToggle = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [primaryColor, setPrimaryColor] = useState('#28947b');
   const [audioError, setAudioError] = useState(null);
+  const [volume, setVolume] = useState(0.5);
   const audioRef = useRef(null);
   const { isMusicOn, setIsMusicOn } = useContext(MusicContext);
+  const isPlayingRef = useRef(false);
 
-  const colorOptions = [
-    { name: 'Teal', value: '#28947b' },
-    { name: 'Blue', value: '#1e40af' },
-    { name: 'Purple', value: '#7e22ce' },
-    { name: 'Red', value: '#b91c1c' },
-    { name: 'Green', value: '#15803d' },
+  const colorSchemes = [
+    { 
+      name: 'Teal', 
+      primary: '#28947b',
+      secondary: 'rgba(0, 255, 255, 0.7)',
+      tertiary: 'rgba(255, 0, 255, 0.7)',
+    },
+    { 
+      name: 'Blue', 
+      primary: '#15728a', 
+      secondary: '#8ffbff', 
+      tertiary: '#ff1c1c' 
+    },
+    { 
+      name: 'Red', 
+      primary: '#b91c1c', 
+      secondary: '#c4c4c4', 
+      tertiary: '#f59e0b' 
+    },
+    { 
+      name: 'Green', 
+      primary: '#138540', 
+      secondary: '#adffd5', 
+      tertiary: '#9effc6' 
+    },
   ];
 
-  // Load settings and initialize audio
   useEffect(() => {
-    const storedColor = localStorage.getItem('primaryColor');
+    const storedPrimary = localStorage.getItem('primaryColor');
+    const storedSecondary = localStorage.getItem('secondaryColor');
+    const storedTertiary = localStorage.getItem('tertiaryColor');
     const storedMusic = localStorage.getItem('music');
+    const storedVolume = localStorage.getItem('musicVolume');
 
-    if (storedColor) {
-      setPrimaryColor(storedColor);
-      document.documentElement.style.setProperty('--primary', storedColor);
+    if (storedPrimary) {
+      setPrimaryColor(storedPrimary);
+      document.documentElement.style.setProperty('--primary', storedPrimary);
     } else {
       document.documentElement.style.setProperty('--primary', primaryColor);
+    }
+
+    if (storedSecondary) {
+      document.documentElement.style.setProperty('--secondary', storedSecondary);
+    } else {
+      document.documentElement.style.setProperty('--secondary', colorSchemes[0].secondary);
+    }
+
+    if (storedTertiary) {
+      document.documentElement.style.setProperty('--tertiary', storedTertiary);
+    } else {
+      document.documentElement.style.setProperty('--tertiary', colorSchemes[0].tertiary);
     }
 
     if (storedMusic) {
       setIsMusicOn(storedMusic === 'on');
     }
 
-    try {
-      audioRef.current = new Audio('/music/background-music.mp3');
-      audioRef.current.loop = true;
-      audioRef.current.volume = 0.5;
-    } catch (error) {
-      setAudioError('Failed to initialize audio.');
-      console.error('Audio initialization error:', error);
+    let initialVolume = 0.5;
+    if (storedVolume) {
+      const parsedVolume = parseFloat(storedVolume);
+      if (!isNaN(parsedVolume) && parsedVolume >= 0 && parsedVolume <= 1) {
+        initialVolume = parsedVolume;
+      } else {
+        console.warn('Invalid stored volume:', storedVolume, 'Defaulting to:', initialVolume);
+        localStorage.setItem('musicVolume', initialVolume.toString());
+      }
+    }
+    setVolume(initialVolume);
+
+    if (!audioRef.current) {
+      try {
+        audioRef.current = new Audio('/music/background-music.mp3');
+        audioRef.current.loop = true;
+        audioRef.current.volume = initialVolume;
+        audioRef.current.muted = initialVolume === 0;
+        audioRef.current.addEventListener('error', () => {
+          setAudioError('Failed to load audio file. Please check the file path.');
+          console.error('Audio load error:', audioRef.current.error);
+        });
+        audioRef.current.addEventListener('canplaythrough', () => {
+          setAudioError(null);
+          console.log('Audio ready, volume:', audioRef.current.volume, 'Muted:', audioRef.current.muted);
+        });
+      } catch (error) {
+        setAudioError('Failed to initialize audio.');
+        console.error('Audio initialization error:', error);
+      }
     }
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = '';
+        audioRef.current = null;
+        isPlayingRef.current = false;
       }
     };
-  }, []);
+  }, [setIsMusicOn]);
 
-  // Handle music playback
   useEffect(() => {
     if (audioRef.current) {
-      if (isMusicOn) {
-        audioRef.current.play().catch((error) => {
-          setAudioError('Playback failed. Ensure user interaction occurred.');
-          console.error('Audio playback failed:', error);
-        });
-      } else {
-        audioRef.current.pause();
-      }
+      const isMuted = volume === 0;
+      audioRef.current.volume = volume;
+      audioRef.current.muted = isMuted;
+      localStorage.setItem('musicVolume', volume.toString());
+      console.log('Volume updated to:', volume, 'Muted:', isMuted);
     }
-  }, [isMusicOn]);
+  }, [volume]);
+
+  const handleVolumeChange = (e) => {
+    const newVolume = parseFloat(e.target.value);
+    const clampedVolume = Math.min(Math.max(newVolume, 0), 1);
+    setVolume(clampedVolume);
+
+    if (audioRef.current) {
+      audioRef.current.volume = clampedVolume;
+      audioRef.current.muted = clampedVolume === 0;
+    }
+
+    localStorage.setItem('musicVolume', clampedVolume.toString());
+    console.log('Slider changed, raw value:', e.target.value, 'Clamped volume:', clampedVolume);
+  };
 
   const togglePopup = (e) => {
     e.preventDefault();
@@ -78,13 +148,29 @@ export const ThemeToggle = () => {
     const newMusicState = !isMusicOn;
     setIsMusicOn(newMusicState);
     localStorage.setItem('music', newMusicState ? 'on' : 'off');
+
+    if (audioRef.current && newMusicState) {
+      try {
+        audioRef.current.play();
+        console.log('Audio playback started');
+      } catch (error) {
+        console.error('Error starting playback:', error);
+      }
+    } else if (audioRef.current) {
+      audioRef.current.pause();
+      console.log('Audio playback paused');
+    }
   };
 
-  const handleColorChange = (color, e) => {
+  const handleColorChange = (scheme, e) => {
     e.preventDefault();
-    setPrimaryColor(color);
-    document.documentElement.style.setProperty('--primary', color);
-    localStorage.setItem('primaryColor', color);
+    setPrimaryColor(scheme.primary);
+    document.documentElement.style.setProperty('--primary', scheme.primary);
+    document.documentElement.style.setProperty('--secondary', scheme.secondary);
+    document.documentElement.style.setProperty('--tertiary', scheme.tertiary);
+    localStorage.setItem('primaryColor', scheme.primary);
+    localStorage.setItem('secondaryColor', scheme.secondary);
+    localStorage.setItem('tertiaryColor', scheme.tertiary);
   };
 
   return (
@@ -92,15 +178,30 @@ export const ThemeToggle = () => {
       <button
         onClick={togglePopup}
         className={cn(
-          'cursor-pointer fixed top-4 right-4 z-[60] p-2 rounded-full bg-primary text-primary-foreground cosmic-button',
-          'focus:outline-none hover:bg-primary/90 w-10 h-10 flex items-center justify-center'
+          'cursor-pointer fixed bottom-4 left-4 z-[60] p-2 rounded-full bg-card',
+          'w-10 h-10 flex items-center justify-center',
+          'md:top-4 md:right-4 md:bottom-auto md:left-auto' // Top-right on larger screens
         )}
         aria-label={isPopupOpen ? 'Close settings' : 'Open settings'}
       >
         {isPopupOpen ? (
-          <CloseIcon sx={{ fontSize: 20 }} />
+          <CloseIcon 
+            sx={{ 
+              fontSize: 20, 
+              color: 'var(--primary-foreground)',
+              filter: 'drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor)',
+              transition: 'filter 0.3s ease-in-out, color 0.3s ease-in-out'
+            }} 
+          />
         ) : (
-          <SettingsIcon sx={{ fontSize: 20 }} />
+          <SettingsIcon 
+            sx={{ 
+              fontSize: 20, 
+              color: 'var(--primary-foreground)',
+              filter: 'drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor)',
+              transition: 'filter 0.3s ease-in-out, color 0.3s ease-in-out'
+            }} 
+          />
         )}
       </button>
 
@@ -116,9 +217,10 @@ export const ThemeToggle = () => {
         ></div>
         <div
           className={cn(
-            'fixed top-16 right-4 w-3/4 max-w-xs bg-background/95 rounded-md p-6 shadow-lg',
+            'fixed bottom-16 left-4 w-3/4 max-w-xs bg-background/95 rounded-md p-6 shadow-lg',
             'transition-all duration-300',
-            isPopupOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            isPopupOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
+            'sm:top-16 sm:right-4 sm:bottom-auto sm:left-auto' // Top-right on larger screens
           )}
         >
           <h3 className="text-lg font-semibold mb-4 text-center">Settings</h3>
@@ -142,25 +244,39 @@ export const ThemeToggle = () => {
                 {isMusicOn ? 'On' : 'Off'}
               </button>
             </div>
+            <div className="flex items-center space-y-2 flex-col">
+              <label className="block font-electrolize text-base">Volume</label>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="volume-slider w-full h-2 bg-card rounded-full appearance-none cursor-pointer"
+                disabled={!isMusicOn || audioError}
+                aria-label="Adjust music volume"
+              />
+            </div>
             {audioError && (
               <p className="text-red-500 text-sm text-center">{audioError}</p>
             )}
             <div>
-              <label className="block font-electrolize text-base mb-2">Primary Color</label>
-              <div className="flex flex-wrap gap-2">
-                {colorOptions.map((color) => (
+              <label className="block font-electrolize text-base mb-2 text-center">Color Scheme</label>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {colorSchemes.map((scheme) => (
                   <button
-                    key={color.value}
-                    onClick={(e) => handleColorChange(color.value, e)}
+                    key={scheme.primary}
+                    onClick={(e) => handleColorChange(scheme, e)}
                     className={cn(
                       'w-8 h-8 rounded-full border-2 transition-all duration-300',
-                      primaryColor === color.value
+                      primaryColor === scheme.primary
                         ? 'border-primary scale-110'
                         : 'border-transparent hover:border-primary/50'
                     )}
-                    style={{ backgroundColor: color.value }}
-                    title={color.name}
-                    aria-label={`Select ${color.name} color`}
+                    style={{ backgroundColor: scheme.primary }}
+                    title={scheme.name}
+                    aria-label={`Select ${scheme.name} color scheme`}
                   />
                 ))}
               </div>
