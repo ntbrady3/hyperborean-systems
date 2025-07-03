@@ -150,7 +150,7 @@ export const ServicesSection = () => {
             <div className="w-full flex items-center justify-center gap-4 mt-6">
               <button
                 onClick={() => scrollToTestimonial(activeTestimonial - 1 >= 0 ? activeTestimonial - 1 : testimonials.length - 1)}
-                className="w-10 h-10 flex items-center justify-center bg-primary/50 rounded-full hover:bg-primary/70 transition-colors duration-300 z-10 ml-4"
+                className="w-10 h-10 flex items-center justify-center hover:bg-primary/70 transition-colors duration-300 z-10 ml-4 bg-primary/50 backdrop-blur-md rounded-full p-2 border-1 border-primary glow-border"
                 aria-label="Previous testimonial"
               >
                 <ChevronLeft sx={{ fontSize: 24 }} className="text-primary-foreground" />
@@ -171,7 +171,7 @@ export const ServicesSection = () => {
               </div>
               <button
                 onClick={() => scrollToTestimonial(activeTestimonial + 1 < testimonials.length ? activeTestimonial + 1 : 0)}
-                className="w-10 h-10 flex items-center justify-center bg-primary/50 rounded-full hover:bg-primary/70 transition-colors duration-300 z-10 mr-4"
+                className="w-10 h-10 flex items-center justify-center hover:bg-primary/70 transition-colors duration-300 z-10 bg-primary/50 backdrop-blur-md rounded-full p-2 border-1 border-primary glow-border"
                 aria-label="Next testimonial"
               >
                 <ChevronRight sx={{ fontSize: 24 }} className="text-primary-foreground" />

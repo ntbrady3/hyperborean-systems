@@ -21,8 +21,8 @@ export const AboutSection = () => {
             </span>
           </span>
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-12 items-center">
+          <div className="space-y-6 max-w-3xl mx-auto">
             <h3 className="text-2xl font-semibold font-orbitron text-tertiary">Innovative Tech Solutions</h3>
             <p className="text-muted-foreground">
               We are a dedicated team of technology experts committed to delivering cutting-edge solutions that drive business success. Our mission is to transform industries through innovation and excellence.
@@ -39,7 +39,7 @@ export const AboutSection = () => {
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-6">
+          {/* <div className="grid grid-cols-1 gap-6">
             <div className="p-6 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50">
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center">
@@ -79,7 +79,7 @@ export const AboutSection = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

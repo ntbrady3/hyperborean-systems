@@ -5,11 +5,14 @@ import { MusicContext } from "./MusicContext";
 import { useLocation } from "react-router-dom";
 
 export const HomeSection = () => {
+  const SKIP_MUSIC_POPUP = true; // Set to true to skip the music popup, false to enable it
   const [isMusicPopupOpen, setIsMusicPopupOpen] = useState(false);
   const { setIsMusicOn } = useContext(MusicContext);
   const location = useLocation();
 
   useEffect(() => {
+    if (SKIP_MUSIC_POPUP) return; // Skip popup if flag is true
+
     // Skip popup if navigating from an internal page
     const referrer = document.referrer;
     const isInternalNavigation = referrer && new URL(referrer).origin === window.location.origin;
@@ -64,31 +67,22 @@ export const HomeSection = () => {
             >
               <span 
                 className="glitch-text relative inline-block" 
-                data-text="Hyperborean Systems"
+                data-text="Atlas Digital Ventures"
                 style={{ 
                   paddingBottom: '20px'
                 }}
               >
-                Hyperborean Systems
+                Atlas Digital Ventures
               </span>
             </span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 animate-fade-in-delay-3">
-            Building innovative solutions for a better tomorrow.
+            Helping you navigate the digital world.
           </p>
-          <div className="opacity-0 animate-fade-in-delay-4 pt-4">
-            <a 
-              href="#projects" 
-              className="inline-block px-8 py-3 text-primary-foreground font-medium font-orbitron transition-all duration-300 bg-primary/50 hover:bg-primary/80 border-2 rounded-md border-primary glow-border"
-            >
-              View Our Work
-            </a>
-          </div>
         </div>
       </div>
-      <div className="hidden md:flex flex-col items-center justify-center absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <span className="text-sm text-muted-foreground mb-2">Scroll</span>
-        <ArrowDown className="h-5 w-5 text-primary"/>
+      <div className="hidden md:flex flex-col items-center justify-center absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce bg-primary/50 backdrop-blur-md rounded-full p-2 border-1 border-primary glow-border">
+        <ArrowDown className="h-5 w-5 text-foreground"/>
       </div>
       {/* Music Prompt Popup */}
       {isMusicPopupOpen && (

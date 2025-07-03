@@ -57,78 +57,65 @@ export const ContactSection = () => {
         <p className="text-center text-muted-foreground mb-6 max-w-2xl mx-auto">
           Have a project in mind or want to collaborate? I'm always open to new opportunities and ideas. Feel free to reach out to me through the form below or connect with me on social media.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="p-6 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50">
-            <h3 className="text-2xl font-semibold mb-6 text-center text-tertiary font-electrolize">Contact Information</h3>
-            <div className="space-y-6 flex flex-col items-center">
-              <a
-                href="mailto:ntbrady3@gmail.com"
-                className="flex flex-col items-center space-y-2 text-muted-foreground hover:text-primary transition-colors duration-300"
-              >
-                <div className="p-3 rounded-full bg-primary/10 flex items-center justify-center mb-1">
-                  <Mail sx={{ fontSize: 24 }} className="text-primary" />
-                </div>
-                ntbrady3@gmail.com
-              </a>
-              <a
-                href="tel:+11234567890"
-                className="flex flex-col items-center space-y-2 text-muted-foreground hover:text-primary transition-colors duration-300"
-              >
-                <div className="p-3 rounded-full bg-primary/10 mb-1 flex items-center justify-center">
-                  <Phone sx={{ fontSize: 24 }} className="text-primary" />
-                </div>
-                +1 (123) 456-7890
-              </a>
-              <div className="flex flex-col items-center space-y-2">
-                <div className="p-3 rounded-full bg-primary/10 mb-1 flex items-center justify-center">
-                  <LocationPin sx={{ fontSize: 24 }} className="text-primary" />
-                </div>
-                <span className="text-muted-foreground">
-                  Rockford, IL, USA
-                </span>
-              </div>
-            </div>
-            <div className="pt-8 flex flex-col items-center">
-              <h4 className="font-medium mb-4 text-center">Connect With Us!</h4>
-              <div className="flex space-x-4 justify-center">
-                <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <LinkedIn sx={{ fontSize: 36 }} />
-                </a>
-                <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <Facebook sx={{ fontSize: 36 }} />
-                </a>
-                <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <X sx={{ fontSize: 36 }} />
-                </a>
-                <a href="#" className="hover:text-primary transition-colors duration-300">
-                  <Instagram sx={{ fontSize: 36 }} />
-                </a>
-              </div>
-            </div>
-          </div>
+        <div className="max-w-2xl mx-auto">
           <div className="p-6 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50">
             <h3 className="text-2xl font-semibold mb-6 font-electrolize text-tertiary">Send a Message</h3>
             <form className="space-y-6" ref={form} onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
-                  placeholder="John Doe"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium mb-2">First Name</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                    className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
+                    placeholder="John"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium mb-2">Last Name</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
+                    placeholder="Doe"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
+                    placeholder="name@name.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium mb-2">Phone</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
+                    placeholder="+1 (123) 456-7890"
+                  />
+                </div>
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
+                <label htmlFor="company" className="block text-sm font-medium mb-2">Company</label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
+                  type="text"
+                  id="company"
+                  name="company"
                   className="w-full px-4 py-3 rounded-md border border-white bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/60"
-                  placeholder="name@name.com"
+                  placeholder="Your Company"
                 />
               </div>
               <div>
@@ -152,6 +139,23 @@ export const ContactSection = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+        <div className="max-w-2xl mx-auto mt-8 bg-zinc-950/40 backdrop-blur-md rounded-lg border-2 border-primary/50 py-4">
+          <h4 className="font-medium mb-4 text-center text-tertiary">Connect With Us!</h4>
+          <div className="flex justify-center space-x-6">
+            <a href="#" className="hover:text-primary transition-colors duration-300">
+              <LinkedIn sx={{ fontSize: 36 }} />
+            </a>
+            <a href="#" className="hover:text-primary transition-colors duration-300">
+              <Facebook sx={{ fontSize: 36 }} />
+            </a>
+            <a href="#" className="hover:text-primary transition-colors duration-300">
+              <X sx={{ fontSize: 36 }} />
+            </a>
+            <a href="#" className="hover:text-primary transition-colors duration-300">
+              <Instagram sx={{ fontSize: 36 }} />
+            </a>
           </div>
         </div>
       </div>

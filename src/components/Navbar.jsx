@@ -12,7 +12,7 @@ const navItems = [
   { name: 'HOME', href: '#home', icon: HomeIcon },
   { name: 'ABOUT', href: '#about', icon: InfoIcon },
   { name: 'SERVICES', href: '#services', icon: BuildIcon },
-  { name: 'PROJECTS', href: '#projects', icon: WorkIcon },
+  // { name: 'PROJECTS', href: '#projects', icon: WorkIcon },
   { name: 'CONTACT', href: '#contact', icon: ContactPageIcon }
 ];
 
